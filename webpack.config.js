@@ -6,6 +6,7 @@ const path = require('path'),
    entry: './client/main.js',
    output: {
      path: path.resolve(__dirname, 'build'),
+     publicPath: 'http://localhost:8080/',
      filename: 'main.bundle.js'
    },
    module: {
@@ -39,6 +40,10 @@ const path = require('path'),
      proxy: {
        '/api': {
          target: 'http://localhost:3000',
+         secure: false
+       },
+      '/socket.io': {
+         target: 'http://localhost:3000/socket.io',
          secure: false
        }
      }

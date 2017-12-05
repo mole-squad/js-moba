@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
-    "watch": "webpack-dev-server --watch --content-base build/",
+    "watch": "webpack-dev-server --watch --content-base build",
     "server": "node ./backend/app.js",
     "start": "concurrently \"npm run watch\" \"npm run server\" --names \"📦,💻\" --prefix name",
     "webpack": "webpack"
