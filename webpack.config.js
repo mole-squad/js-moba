@@ -28,7 +28,19 @@ const path = require('path'),
       {
         from: 'client/index.html',
         to: 'index.html'
+      },
+      {
+        from: 'node_modules/socket.io-client/dist/socket.io.js',
+        to: 'socket.io.js'
       }
     ])
-   ]
+   ],
+   devServer: {
+     proxy: {
+       '/api': {
+         target: 'http://localhost:3000',
+         secure: false
+       }
+     }
+   }
 };
