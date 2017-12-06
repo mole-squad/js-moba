@@ -21,6 +21,7 @@
     "copy-webpack-plugin": "^4.2.3",
     "express": "^4.16.2",
     "nodemon": "^1.12.5",
+    "redux": "^3.7.2",
     "socket.io": "^2.0.4",
     "webpack": "^3.10.0",
     "webpack-dev-server": "^2.9.5"
