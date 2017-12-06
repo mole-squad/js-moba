@@ -41,6 +41,12 @@ class Game {
     });
 
     this._intervalId = setInterval(() => {
+      this._players.forEach(aPlayer => {
+        aPlayer.position = {
+          x: Math.floor(Math.random() * 80),
+          y: Math.floor(Math.random() * 80)
+        };
+      });
 
       this.emitDelta();
     }, TICK_INTERVAL_MS);

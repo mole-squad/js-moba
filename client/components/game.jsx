@@ -1,22 +1,24 @@
 import React from 'react';
 
+import { GameCanvas } from './gameCanvas.jsx';
 import { PlayerBadge } from './playerBadge.jsx';
 
-export function Game({ id, players }) {
+export function Game({ players, id }) {
   const rows = players.map(aPlayer => {
     return (<PlayerBadge player={aPlayer} key={aPlayer.id} />)
   });
 
   return(
     <div style={styles.container}>
-      <canvas style={styles.canvas}></canvas>
+      <div style={styles.canvas}>
+        <GameCanvas players={players} />
+      </div>
 
       <div style={styles.scoreboard}>
         <h1>Game #{id}</h1>
-        <div style={styles.playerList}>
-          <h2>Players:</h2>
-          {rows}
-        </div>
+        <h2>Players:</h2>
+        {rows}
+
       </div>
     </div>
   );
@@ -37,8 +39,5 @@ const styles = {
   scoreboard: {
     padding: '15px 25px',
     border: '1px solid #CECECE'
-  },
-  playerList: {
-
   }
 };

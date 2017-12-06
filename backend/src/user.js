@@ -2,9 +2,10 @@ class User {
   constructor(socket) {
     this.connection = socket;
     this.position = {
-      x: 10,
-      y: 10
+      x: Math.floor(Math.random() * 80),
+      y: Math.floor(Math.random() * 80)
     };
+
     this.id = socket.id;
     this.isVisible = true;
 
