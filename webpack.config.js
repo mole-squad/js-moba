@@ -3,7 +3,7 @@ const path = require('path'),
   CopyWebpackPlugin = require('copy-webpack-plugin');
 
  module.exports = {
-   entry: './client/main.js',
+   entry: './client/main.jsx',
    output: {
      path: path.resolve(__dirname, 'build'),
      publicPath: 'http://localhost:8080/',
@@ -17,7 +17,15 @@ const path = require('path'),
          query: {
              presets: ['env']
          }
-       }
+       },
+       {
+        test: /.jsx?$/,
+        loader: 'babel-loader',
+        exclude: /node_modules/,
+        query: {
+          presets: ['env', 'react']
+        }
+      }
      ]
    },
    stats: {

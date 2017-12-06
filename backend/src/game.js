@@ -28,6 +28,11 @@ class Game {
   }
 
   startGame() {
+    if (this._intervalId) {
+      console.error(`Failed to start game #${this.id}: Game already in progress`);
+      return;
+    }
+
     console.log(`Starting game #${this.id}`);
 
     this._io.on('action', action => {
@@ -35,7 +40,7 @@ class Game {
       this.onAction(action);
     });
 
-    setInterval(() => {
+    this._intervalId = setInterval(() => {
 
       this.emitDelta();
     }, TICK_INTERVAL_MS);
