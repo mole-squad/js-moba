@@ -17,6 +17,12 @@ app.get('/', (req, res) => {
 
 io.on('connection', (socket) => {
   console.log('user connected');
+
+  io.emit('message', 'hello world!');
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  })
 })
 
 http.listen(3000, () => {
