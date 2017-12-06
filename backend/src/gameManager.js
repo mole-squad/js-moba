@@ -1,4 +1,5 @@
 const Game = require('./game');
+const User = require('./user');
 
 class GameManager {
   constructor(io) {
@@ -10,21 +11,13 @@ class GameManager {
   }
 
   onNewUser(socket) {
-    const user = {
-      position: {},
-      items: [],
-      id: socket.id,
-      connection: socket
-    };
+    const user = new User(socket);
 
     this._connectionsById.set(user.id, user);
 
     console.log(`User Connected: #${user.id}`);
 
-    socket.on('disconnect', () => {
-      console.log(`User disconnected: #${user.id}`);
-      this._connectionsById.delete(user.id);
-    });
+    socket.on('disconnect', () => this._connectionsById.delete(user.id));
 
     if (!this.hasAvailableGames()) {
       this._games.push(new Game(this._io));
