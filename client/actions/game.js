@@ -13,3 +13,11 @@ export function gameDelta(delta) {
     delta
   };
 }
+
+export const SETTINGS_LOADED = 'SETTINGS_LOADED';
+export function settingsLoaded(settings) {
+  return {
+    type: SETTINGS_LOADED,
+    settings
+  };
+}

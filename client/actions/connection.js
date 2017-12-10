@@ -5,3 +5,11 @@ export function setConnection(socket) {
     socket
   };
 }
+
+export const EMIT_ACTION = 'EMIT_ACTION';
+export function emitAction(action) {
+  return {
+    type: EMIT_ACTION,
+    action
+  };
+}

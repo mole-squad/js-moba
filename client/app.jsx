@@ -3,7 +3,7 @@ import { Provider } from 'react-redux'
 import { createStore } from 'redux';
 
 import { setConnection } from './actions/connection';
-import { gameDelta, joinGame } from './actions/game';
+import { gameDelta, joinGame, settingsLoaded } from './actions/game';
 import { GameContainer } from './containers/gameContainer';
 import { rootReducer } from './reducers/rootReducer';
 
@@ -20,6 +20,7 @@ export default class App extends Component {
 
     socket.on('JOIN_GAME', gameId => store.dispatch(joinGame(gameId)));
     socket.on('delta', delta => store.dispatch(gameDelta(delta)));
+    socket.on('GAME_SETTINGS', settings => store.dispatch(settingsLoaded(settings)));
   }
 
   render() {

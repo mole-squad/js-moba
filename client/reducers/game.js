@@ -1,4 +1,4 @@
-import { GAME_DELTA, JOIN_GAME } from '../actions/game';
+import { GAME_DELTA, JOIN_GAME, SETTINGS_LOADED } from '../actions/game';
 
 export function game(state={}, action) {
   switch (action.type) {
@@ -7,6 +7,9 @@ export function game(state={}, action) {
 
     case GAME_DELTA:
       return Object.assign({}, state, action.delta);
+
+    case SETTINGS_LOADED:
+      return Object.assign({}, state, { settings: action.settings });
 
     default:
       return state;

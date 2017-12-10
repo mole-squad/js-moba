@@ -1,22 +1,20 @@
-import { Drawable } from './drawable';
+import { BoxGeometry, Mesh, MeshBasicMaterial} from 'three';
 
 const PLAYER_DIMENSION = 15;
 
-export class Player extends Drawable {
-  constructor(canvasElm, userState) {
-    super(canvasElm);
-    this.state = userState;
+export class Player {
+  constructor(scene, userState) {
+    this._geometry = new BoxGeometry( 1, 1, 1 );
+    this._material = new MeshBasicMaterial( { color: userState.color } );
+    this._mesh = new Mesh(this._geometry, this._material);
+
+    scene.add(this._mesh);
+    this.update(userState);
   }
 
-  render() {
-    if (!this.state.position) return;
-
-    this.ctx.fillStyle = this.state.color;
-    this.ctx.fillRect(
-      this.state.position.x,
-      this.state.position.y,
-      PLAYER_DIMENSION,
-      PLAYER_DIMENSION / 2
-    );
+  update(state) {
+    this.state = state;
+    this._mesh.position.x = 0;//this.state.position.x;
+    this._mesh.position.y = 0;//this.state.position.y;
   }
 }
