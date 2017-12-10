@@ -5,8 +5,8 @@
   "scripts": {
     "babel": "babel --presets es2015 js/main.js -o build/main.bundle.js",
     "watch": "webpack-dev-server --watch --content-base build",
-    "devserver": "nodemon ./backend/app.js --ignore client/",
-    "server": "node ./backend/app.js",
+    "devserver": "nodemon ./backend/start.js --ignore client/",
+    "server": "node ./backend/start.js",
     "start": "concurrently \"npm run watch\" \"npm run devserver\" --names \"📦,💻\" --prefix name",
     "webpack": "webpack"
   },
