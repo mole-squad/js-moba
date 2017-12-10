@@ -5,13 +5,16 @@ const TIMEOUT_MS = 1000;
 class User {
   constructor(socket) {
     this.connection = socket;
+    this.id = socket.id;
+  }
+
+  onGameStart() {
     this.position = {
       x: Math.floor(Math.random() * MAX_DIMENSION * .8),
       y: Math.floor(Math.random() * MAX_DIMENSION * .8)
     };
 
-    this.id = socket.id;
-    this.isVisible = true;
+    this.resetTimer();
   }
 
   setColor(color) {
@@ -52,7 +55,7 @@ class User {
   }
 
   reset() {
-    this.color = color;
+    this.color = null;
     this.position = null;
     this.lastPingTime = null;
   }
@@ -67,7 +70,7 @@ class User {
   getState() {
     return {
       id: this.id,
-      position: this.isVisible ? this.position : null,
+      position: this.position,
       color: this.color
     };
   }

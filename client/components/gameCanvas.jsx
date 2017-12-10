@@ -6,6 +6,7 @@ import { ACTION_KEYCODE_MAP } from '../actions/userActionTypes';
 
 export class GameCanvas extends Component {
   componentDidMount() {
+    this.id = Date.now();
     const canvasElm = ReactDOM.findDOMNode(this.refs.myCanvas),
       canvas = new Canvas(canvasElm, this.getState());
 
@@ -17,23 +18,24 @@ export class GameCanvas extends Component {
       canvas.clear();
       canvas.render(self.getState());
 
-      requestAnimationFrame(tick);
+      self.animationId = requestAnimationFrame(tick);
     };
 
     this._started = true;
-    requestAnimationFrame(tick);
+    self.animationId = requestAnimationFrame(tick);
   }
 
   getState() {
     return {
+      id: this.id,
       settings: this.props.settings,
       players: this.props.players
     };
   }
 
-  ready() {
-    const { players, settings } = this.props;
-    return players && players.length && settings;
+  componentWillUnmount() {
+    console.log('unmount');
+    cancelAnimationFrame(this.animationId);
   }
 
   render() {
@@ -42,7 +44,10 @@ export class GameCanvas extends Component {
 
   onKeyDown(event) {
     const action = ACTION_KEYCODE_MAP[event.keyCode];
-    if (action) this.props.onAction(action);
+    if (action) {
+      event.preventDefault();
+      this.props.onAction(action)
+    };
   }
 }
 

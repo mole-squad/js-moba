@@ -51,7 +51,7 @@ class Game {
       return;
     }
 
-    this._players.forEach(aPlayer => aPlayer.resetTimer());
+    this._players.forEach(aPlayer => aPlayer.onGameStart());
 
     this._isStarted = true;
     console.log(`Starting game #${this.id}`);
@@ -119,6 +119,7 @@ class Game {
   }
 
   onDestroy() {
+    this._isStarted = false;
     clearInterval(this._intervalId);
     this._players.forEach(aPlayer => aPlayer.reset())
     // TODO clean up sockets?

@@ -14,7 +14,10 @@ export class Player {
 
   update(state) {
     this.state = state;
-    this._mesh.position.x = 0;//this.state.position.x;
-    this._mesh.position.y = 0;//this.state.position.y;
+    console.log(this.state.position);
+    if (!this.state.position) return;
+
+    this._mesh.position.x = 3; //this.state.position.x;
+    this._mesh.position.y = 3;//this.state.position.y;
   }
 }
