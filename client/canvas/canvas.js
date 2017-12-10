@@ -44,7 +44,17 @@ export class Canvas {
   }
 
   render(state) {
-    state.players.forEach(aPlayer => this.players[aPlayer.id].update(aPlayer));
+    state.players.forEach(aPlayer => {
+      const p = this.players[aPlayer.id];
+
+      if (p) {
+        p.update(aPlayer)
+      } else {
+        console.log('wtf')
+        console.log(this.players);
+      }
+
+    });
 
     this._renderer.render(this._scene, this._camera);
 

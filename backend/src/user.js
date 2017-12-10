@@ -1,5 +1,6 @@
 const MOVE_DISTANCE = 2;
 const MAX_DIMENSION = 100;
+const TIMEOUT_MS = 1000;
 
 class User {
   constructor(socket) {
@@ -11,8 +12,18 @@ class User {
 
     this.id = socket.id;
     this.isVisible = true;
+  }
 
-    this.color = COLOR_OPTIONS[Math.floor(Math.random() * COLOR_OPTIONS.length)];
+  setColor(color) {
+    this.color = color;
+  }
+
+  resetTimer() {
+    this.lastPingTime = Date.now();
+  }
+
+  isInactive() {
+    return Date.now() - this.lastPingTime > TIMEOUT_MS;
   }
 
   onAction(action) {
@@ -40,6 +51,12 @@ class User {
     this.snapToContainer();
   }
 
+  reset() {
+    this.color = color;
+    this.position = null;
+    this.lastPingTime = null;
+  }
+
   snapToContainer() {
     if (this.position.x < 0) this.position.x = 0;
     if (this.position.x > MAX_DIMENSION) this.position.x = MAX_DIMENSION;
@@ -55,19 +72,5 @@ class User {
     };
   }
 }
-
-const COLOR_OPTIONS = [
-  '#C91F37',
-  '#F47983',
-  '#875F9A',
-  '#BF55EC',
-  '#22A7F0',
-  '#1F4788',
-  '#006442',
-  '#36D7B7',
-  '#F5D76E',
-  '#BFBFBF',
-  '#EEEEEE'
-];
 
 module.exports = User;

@@ -19,22 +19,32 @@ class GameManager {
 
     socket.on('disconnect', () => this._connectionsById.delete(user.id));
 
-    if (!this.hasAvailableGames()) {
-      this._games.push(new Game(this._io));
-    }
-
     this.assignUserToGame(user);
   }
 
-  hasAvailableGames() {
-    return this._games.filter(aGame => aGame.isAvailable()).length > 0;
+  onGameEnd(game, abandonedPlayers) {
+    const index = this._games.findIndex(aGame => aGame.id === game.id);
+    this._games.splice(index, 1);
+
+    abandonedPlayers.forEach(aPlayer => {
+      console.log(`Reassigning player #${aPlayer.id}`);
+      this.assignUserToGame(aPlayer)
+    });
   }
 
   assignUserToGame(user) {
+    if (this._games.filter(aGame => aGame.isAvailable()).length === 0) {
+      const newGame = new Game(this._io, players => this.onGameEnd(newGame, players));
+      this._games.push(newGame);
+    }
+
     for (let i = 0; i < this._games.length; i++) {
       if (this._games[i].isAvailable()) {
-        this._games[i].addUser(user);
-        break;
+        if (this._games[i].addUser(user)) {
+          break;
+        } else {
+          console.error(`Failed to add user #${user.id} to game #${this._games[i].id}`);
+        }
       }
     }
   }

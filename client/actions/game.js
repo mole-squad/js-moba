@@ -21,3 +21,10 @@ export function settingsLoaded(settings) {
     settings
   };
 }
+
+export const GAME_ABANDONED = 'GAME_ABANDONED';
+export function gameAbandoned() {
+  return {
+    type: GAME_ABANDONED
+  };
+}

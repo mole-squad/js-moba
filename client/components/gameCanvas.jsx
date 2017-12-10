@@ -48,7 +48,6 @@ export class GameCanvas extends Component {
 
 const styles = {
   canvas: {
-    width: '100%',
-    height: '100%'
+
   }
 };

@@ -2,14 +2,16 @@ const PLAYER_LIMIT = 2;
 const TICK_INTERVAL_MS = 20;
 
 class Game {
-  constructor(io) {
+  constructor(io, onDestroy) {
     this.id = (Math.random() * 100000).toFixed(0);
+    this.availableColors = COLOR_OPTIONS.slice();
     this._io = io;
     this.tickNo = 0;
     this._players = [];
     this._bufferedActions = [];
     this._actionsByTick = {};
     this._isStarted = false;
+    this._onDestroy = onDestroy;
   }
 
   isAvailable() {
@@ -19,16 +21,23 @@ class Game {
   addUser(user) {
     if (this._players.length >= PLAYER_LIMIT) return;
 
+    console.log(`User #${user.id} joined game #${this.id}`);
     this._players.push(user);
 
+    // Set color
+    const colorIndex = Math.floor(Math.random() * this.availableColors.length);
+    user.setColor(this.availableColors[colorIndex]);
+    this.availableColors.splice(colorIndex, 1);
+
+    // Socket events
     user.connection.on('action', action => this.onAction(user, action));
     user.connection.on('disconnect', () => this.onDisconnect(user));
+    user.connection.on('ACK', () => user.resetTimer());
 
     user.connection.emit('JOIN_GAME', this.id);
 
-    console.log(`User #${user.id} joined game #${this.id}`);
-
     if (this._players.length === PLAYER_LIMIT) this.startGame();
+    return true;
   }
 
   startGame() {
@@ -42,10 +51,13 @@ class Game {
       return;
     }
 
+    this._players.forEach(aPlayer => aPlayer.resetTimer());
+
     this._isStarted = true;
     console.log(`Starting game #${this.id}`);
 
     this._intervalId = setInterval(() => {
+      this.timeoutInactiveUsers();
       this.processActions();
       this.emitDelta();
 
@@ -53,6 +65,14 @@ class Game {
     }, TICK_INTERVAL_MS);
   }
 
+  timeoutInactiveUsers() {
+    this._players.forEach(aPlayer => {
+      if (aPlayer.isInactive()) {
+        this.onDisconnect(aPlayer, true);
+      }
+    });
+
+  }
   _broadcastMessage(key, value) {
     this._players.forEach(aPlayer => {
       aPlayer.connection.emit(key, value);
@@ -82,14 +102,42 @@ class Game {
     this._bufferedActions.push({ user, action });
   }
 
-  onDisconnect(user) {
-    console.log(`User disconnected: #${user.id}`);
+  onDisconnect(user, isTimeout) {
+    if (isTimeout) {
+      console.log(`User timed out: #${user.id}`);
+    } else {
+      console.log(`User disconnected: #${user.id}`);
+    }
+
     const playerIndex = this._players.indexOf(user);
     this._players.splice(playerIndex, 1);
 
     this._broadcastMessage('USER_DISCONNECT', user.id);
     this._broadcastMessage('GAME_ABANDONED', this.id);
+
+    this.onDestroy();
+  }
+
+  onDestroy() {
+    clearInterval(this._intervalId);
+    this._players.forEach(aPlayer => aPlayer.reset())
+    // TODO clean up sockets?
+    this._onDestroy(this._players);
   }
 }
+
+const COLOR_OPTIONS = [
+  '#C91F37',
+  '#F47983',
+  '#875F9A',
+  '#BF55EC',
+  '#22A7F0',
+  '#1F4788',
+  '#006442',
+  '#36D7B7',
+  '#F5D76E',
+  '#BFBFBF',
+  '#EEEEEE'
+];
 
 module.exports = Game;

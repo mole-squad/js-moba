@@ -41,8 +41,6 @@ const styles = {
     height: '100%',
   },
   canvas: {
-    width: '500px',
-    height: '500px',
     border: '1px solid #CECECE'
   },
   scoreboard: {
