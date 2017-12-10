@@ -3,9 +3,11 @@ const http = require('http').Server(app);
 const path = require('path');
 const io = require('socket.io')(http);
 
-const GameManager = require('./src/GameManager');
+// const GameManager = require('./src/GameManager');
+// const gameManager = new GameManager(io);
 
-const gameManager = new GameManager(io);
+const socketRoutes = require('./routes/sockets');
+const socket_routes = socketRoutes(io);
 
 // TODO substitute with env variable
 app.set('port', 3000);

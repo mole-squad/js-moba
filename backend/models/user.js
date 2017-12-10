@@ -1,3 +1,4 @@
+const users_repository = require('../repositories/users')();
 const MOVE_DISTANCE = 2;
 const MAX_DIMENSION = 100;
 const TIMEOUT_MS = 1000;
@@ -6,6 +7,11 @@ class User {
   constructor(socket) {
     this.connection = socket;
     this.id = socket.id;
+    this._users_repository = users_repository;
+  }
+
+  save() {
+    this._users_repository._addUser(this);
   }
 
   onGameStart() {

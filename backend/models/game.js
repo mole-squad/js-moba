@@ -1,17 +1,22 @@
+const games_repository = require('../repositories/games')();
 const PLAYER_LIMIT = 2;
 const TICK_INTERVAL_MS = 20;
 
 class Game {
-  constructor(io, onDestroy) {
+  constructor() {
     this.id = (Math.random() * 100000).toFixed(0);
     this.availableColors = COLOR_OPTIONS.slice();
-    this._io = io;
     this.tickNo = 0;
     this._players = [];
     this._bufferedActions = [];
     this._actionsByTick = {};
     this._isStarted = false;
     this._onDestroy = onDestroy;
+    this._games_repository = games_repository;
+  }
+
+  save() {
+    this._games_repository._addGame(this);
   }
 
   isAvailable() {
@@ -31,7 +36,7 @@ class Game {
 
     // Socket events
     user.connection.on('action', action => this.onAction(user, action));
-    user.connection.on('disconnect', () => this.onDisconnect(user));
+    // user.connection.on('disconnect', () => this.disconnect(user));
     user.connection.on('ACK', () => user.resetTimer());
 
     user.connection.emit('JOIN_GAME', this.id);
@@ -68,11 +73,11 @@ class Game {
   timeoutInactiveUsers() {
     this._players.forEach(aPlayer => {
       if (aPlayer.isInactive()) {
-        this.onDisconnect(aPlayer, true);
+        this.disconnect(aPlayer, true);
       }
     });
-
   }
+
   _broadcastMessage(key, value) {
     this._players.forEach(aPlayer => {
       aPlayer.connection.emit(key, value);
@@ -102,7 +107,7 @@ class Game {
     this._bufferedActions.push({ user, action });
   }
 
-  onDisconnect(user, isTimeout) {
+  disconnect(user, isTimeout) {
     if (isTimeout) {
       console.log(`User timed out: #${user.id}`);
     } else {
@@ -118,12 +123,14 @@ class Game {
     this.onDestroy();
   }
 
+  destroy() {
+    this._games_repository.get()
+  }
+
   onDestroy() {
     this._isStarted = false;
     clearInterval(this._intervalId);
     this._players.forEach(aPlayer => aPlayer.reset())
-    // TODO clean up sockets?
-    this._onDestroy(this._players);
   }
 }
 
